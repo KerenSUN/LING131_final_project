@@ -2,6 +2,8 @@ from random import choice
 from collections import defaultdict
 
 
+
+
 def load_grammar(filename):
     f = open(filename)
     rules = defaultdict(list)
@@ -19,18 +21,33 @@ def make_template(rules, root_symbol):
     else:
         template.append(root_symbol)
         rhs = choice(rules[root_symbol])
+
         for part in rhs:
             template.append(make_template(rules, part))
     return template
 
 
-def load_lexicon(filename):
-    f = open(filename)
+def load_lexicon(filename1, filename2):
+    f1 = open(filename1)
+    f2 = open(filename2)
+
+    output_file = open("all_lexicon.txt", "w")
+    for line in f1:
+        output_file.write(line)
+    output_file.close()
+    output_file = open("all_lexicon.txt", "a")
+    for line in f2:
+        output_file.write(line)
+    output_file.close()
+    f = open("all_lexicon.txt")
+
     lexicon = defaultdict(list)
     lexicon["<NULL>"] = [""]
     for line in f:
         linelist = line.split()
-        lexicon[linelist[1]].append(linelist[0] + " ")
+        linejoin = " ".join(linelist[0:-1])
+        lexicon[linelist[-1]].append(linejoin + " ")
+    print(lexicon)
     return lexicon
 
 
@@ -45,5 +62,8 @@ def make_sentence(template, lexicon):
 
 
 if __name__ == "__main__":
-    grammar = load_grammar('rules.txt')
-    print(make_template(grammar, "S"))
+    grammar = load_grammar('rules_edited.txt')
+    template = make_template(grammar, "S")
+    print(template)
+    lexicon = load_lexicon("lexicon_edited.txt", "player_lexicon.txt")
+    print(make_sentence(template, lexicon))
