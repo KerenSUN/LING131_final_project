@@ -165,8 +165,8 @@ class URLtoText():
 
 
 if __name__ == "__main__":
-    url_match = "https://bwf.tournamentsoftware.com/sport/match.aspx?id=F0D25C8F-6A9A-49DE-97FC-E58E3DB74CF1&match=35"
-    url_vs = "https://bwf.tournamentsoftware.com/ranking/headtohead.aspx?id=209B123F-AA87-41A2-BC3E-CB57133E64CC&t1p1=89785&t2p1=54346"
+    url_match = "https://bwf.tournamentsoftware.com/sport/match.aspx?id=516667B8-6B2A-4A3D-A1F9-479697494345&match=1"
+    url_vs = "https://bwf.tournamentsoftware.com/ranking/headtohead.aspx?id=209B123F-AA87-41A2-BC3E-CB57133E64CC&t1p1=83046&t1p2=63168&t2p1=99452&t2p2=89426"
     url_to_text = URLtoText(url_match, url_vs)
     url_to_text.identify_players_seed_country()
     url_to_text.identify_scores()
@@ -174,3 +174,11 @@ if __name__ == "__main__":
     url_to_text.identify_date()
     url_to_text.identify_head2head_ranking()
     url_to_text.identify_last_meeting()
+
+    output_file = open("player_lexicon.txt", "w")
+    if (len(url_to_text.winner)==2):
+        output_file.write(url_to_text.winner[0] + ", " + url_to_text.winner[1] + " NW\n")
+        output_file.write(url_to_text.loser[0] + ", " + url_to_text.loser[1] + " NL\n")
+    else:
+        output_file.write(url_to_text.winner[0] + " NW\n")
+        output_file.write(url_to_text.loser[0] + " NL\n")
