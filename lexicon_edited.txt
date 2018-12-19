@@ -1,24 +1,4 @@
 beat V
 defeated V
 won V
-the D
-some D
-from P
-for P
-in P
-about P
-very Deg
-exceedingly Deg
-fairly Deg
-victory N
-glory N
-world champion N
-surprisingly Adv
-Overwhelmingly Adv
-primitive A
-experienced A
-world-class A
-Information to be added:
-player_name N
-country_adj A
-
+conquered V
