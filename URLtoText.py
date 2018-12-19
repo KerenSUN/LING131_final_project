@@ -86,10 +86,11 @@ class URLtoText():
                 self.country_l = country[0]
 
     def identify_score(self):
-        scores = re.findall(r"<span class=\"score\">(.*)</span></td>", self.html)
-        self.score = re.findall(r"<span>(\d\d?-\d\d?)</span>", scores[0])
-        if (re.search(r"Retired", scores[0])):
-            score.append("Retired")
+        scores_original = re.findall(r"<span class=\"score\">(.*)</span></td>", self.html)
+        scores = re.findall(r"<span>(\d\d?-\d\d?)</span>", scores_original[0])
+        if (re.search(r"Retired", scores_original[0])):
+            scores.append("Retired")
+        self.scores = scores
 
     def identify_duration(self):
         duration_str = re.findall(r">(\d\d?:\d\d?)<", self.html)
