@@ -1,0 +1,14 @@
+beat V
+defeated V
+won V
+conquered V
+of P
+was beaten by PREDI
+was defeated by PREDI
+lost to PREDI
+was conquered by PREDI
+their last meeting NPM
+their head-to-head record NPR
+was on PREP
+became VPT
+and CONJ
