@@ -86,12 +86,12 @@ class URLtoText():
                 self.country_l = country[0]
 
 
-        print("winner: " + str(self.winner))
-        print("loser: " + str(self.loser))
-        print("seeding_w: " + str(self.seeding_w))
-        print("seeding_l: " + str(self.seeding_l))
-        print("country_w: " + str(self.country_w))
-        print("country_l:" + str(self.country_l))
+        # print("winner: " + str(self.winner))
+        # print("loser: " + str(self.loser))
+        # print("seeding_w: " + str(self.seeding_w))
+        # print("seeding_l: " + str(self.seeding_l))
+        # print("country_w: " + str(self.country_w))
+        # print("country_l:" + str(self.country_l))
 
 
     def identify_scores(self):
@@ -102,7 +102,7 @@ class URLtoText():
             scores.append("Retired")
         self.scores = scores
 
-        print("scores: " + str(self.scores))
+        # print("scores: " + str(self.scores))
 
 
     def identify_duration(self):
@@ -110,15 +110,15 @@ class URLtoText():
         hour = re.findall(r"(\d\d?):", duration_str[0])
         minute = re.findall(r":(\d\d?)", duration_str[0])
         self.duration_in_min = int(hour[0]) * 60 + int(minute[0])
-        print("duration: " + str(self.duration_in_min))
+        # print("duration: " + str(self.duration_in_min))
 
     def identify_date(self):
         self.date = re.search(r"\"plannedtime\" align=\"right\">(.*?)</td>", self.html_match).group(1)  # to match the date in previous meetings
-        print("date: " + str(self.date))
+        # print("date: " + str(self.date))
 
     def identify_head2head_ranking(self):
-        left_points = re.search(r"<.*>.*(\d+).*<.*>.*Record.*<.*>.*(\d+).*", self.html_vs).group(1)
-        right_points = re.search(r"<.*>.*(\d+).*<.*>.*Record.*<.*>.*(\d+).*", self.html_vs).group(2)
+        left_head2head = re.search(r"<.*>.*(\d+).*<.*>.*Record.*<.*>.*(\d+).*", self.html_vs).group(1)
+        right_head2head = re.search(r"<.*>.*(\d+).*<.*>.*Record.*<.*>.*(\d+).*", self.html_vs).group(2)
 
         left_ranking = re.search(r"<.+?><.+?><.+?>(\d+)<.+?><.+?>Ranking<.+?><.+?>(\d+)", self.html_vs).group(1)
         right_ranking = re.search(r"<.+?><.+?><.+?>(\d+)<.+?><.+?>Ranking<.+?><.+?>(\d+)", self.html_vs).group(2)
@@ -127,58 +127,41 @@ class URLtoText():
         winner = [name.lower() for name in self.winner]
 
         if left_name.lower() in winner:
-            self.points_w = left_points
-            self.points_l = right_points
+            self.head2head_w = left_head2head
+            self.head2head_l = right_head2head
 
             self.ranking_w = left_ranking
             self.ranking_l = right_ranking
         else:
-            self.points_w = right_points
-            self.points_l = left_points
+            self.head2head_w = right_head2head
+            self.head2head_l = left_head2head
 
             self.ranking_w = right_ranking
             self.ranking_l = left_ranking
 
-        print("points_w: " + self.points_w)
-        print("points_l: " + self.points_l)
-        print("ranking_w: " + self.ranking_w)
-        print("ranking_l: " + self.ranking_l)
+        # print("points_w: " + self.head2head_w)
+        # print("points_l: " + self.head2head_l)
+        # print("ranking_w: " + self.ranking_w)
+        # print("ranking_l: " + self.ranking_l)
 
 
     def identify_last_meeting(self):
         meetings = re.findall(r"<.+?class=\"plannedtime\".+?>([\w]{3} [\d]{,2}/[\d]{,2}/[\d]{4})[ <span class=\"time\">]?([\d]{,2}:[\d]{2} [\w]{2})?<.+?><.+?><.+?>([\w+\- ]+).+?<strong><.+?>([\w+ ]+)", self.html_vs, flags=re.DOTALL)
+        last_meeting = []
+        self.last_meeting = []
         index = 0
         for meeting in meetings:
-            if meeting[0] == self.date:
+            if meeting[0] == self.date and len(meetings) > index + 1:
                 last_meeting = meetings[index + 1]
                 break;
             index += 1
-        self.last_meeting = []
-        self.last_meeting.append(last_meeting[0])
-        if last_meeting[2][-1] == ' ':
-            self.last_meeting.append(last_meeting[2][:-1])
-        else:
-            self.last_meeting.append(last_meeting[2])
-        self.last_meeting.append(last_meeting[3][:-1])
-        print("last meeting: " + str(self.last_meeting))
+        if len(last_meeting) > 0:
+            self.last_meeting.append(last_meeting[0])
+            if last_meeting[2][-1] == ' ':
+                self.last_meeting.append(last_meeting[2][:-1])
+            else:
+                self.last_meeting.append(last_meeting[2])
+                self.last_meeting.append(last_meeting[3][:-1])
+        # print("last meeting: " + str(self.last_meeting))
         # winner only show one person, but for double players one is also enough to determine which team is winner
 
-
-if __name__ == "__main__":
-    url_match = "https://bwf.tournamentsoftware.com/sport/match.aspx?id=516667B8-6B2A-4A3D-A1F9-479697494345&match=1"
-    url_vs = "https://bwf.tournamentsoftware.com/ranking/headtohead.aspx?id=209B123F-AA87-41A2-BC3E-CB57133E64CC&t1p1=83046&t1p2=63168&t2p1=99452&t2p2=89426"
-    url_to_text = URLtoText(url_match, url_vs)
-    url_to_text.identify_players_seed_country()
-    url_to_text.identify_scores()
-    url_to_text.identify_duration()
-    url_to_text.identify_date()
-    url_to_text.identify_head2head_ranking()
-    url_to_text.identify_last_meeting()
-
-    output_file = open("player_lexicon.txt", "w")
-    if (len(url_to_text.winner)==2):
-        output_file.write(url_to_text.winner[0] + ", " + url_to_text.winner[1] + " NW\n")
-        output_file.write(url_to_text.loser[0] + ", " + url_to_text.loser[1] + " NL\n")
-    else:
-        output_file.write(url_to_text.winner[0] + " NW\n")
-        output_file.write(url_to_text.loser[0] + " NL\n")
