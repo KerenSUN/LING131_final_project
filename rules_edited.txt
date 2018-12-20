@@ -1,3 +1,0 @@
-S > NP VP
-NP > NW
-VP > V NL
