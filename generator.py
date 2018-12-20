@@ -2,8 +2,6 @@ from random import choice
 from collections import defaultdict
 
 
-
-
 def load_grammar(filename):
     f = open(filename)
     rules = defaultdict(list)
@@ -14,16 +12,15 @@ def load_grammar(filename):
     return rules
 
 
-def make_template(rules, root_symbol):
-    template = []
+def make_template(rules, root_symbol, template):
     if root_symbol not in rules:
-        return [root_symbol]
-    else:
         template.append(root_symbol)
+    else:
         rhs = choice(rules[root_symbol])
 
         for part in rhs:
-            template.append(make_template(rules, part))
+            make_template(rules, part, template)
+
     return template
 
 
@@ -47,7 +44,7 @@ def load_lexicon(filename1, filename2):
         linelist = line.split()
         linejoin = " ".join(linelist[0:-1])
         lexicon[linelist[-1]].append(linejoin + " ")
-    print(lexicon)
+    # print(lexicon)
     return lexicon
 
 
@@ -56,14 +53,7 @@ def make_sentence(template, lexicon):
     for POS in template:
         candidates = lexicon[POS]
         sentence += choice(candidates)
-    sentence = sentence[0].upper() + sentence[1:]
-    sentence += choice([".", "!", "..."])
+    sentence = sentence[0].upper() + sentence[1:-1]
+    sentence += choice([".", "!"])
     return sentence
 
-
-if __name__ == "__main__":
-    grammar = load_grammar('rules_edited.txt')
-    template = make_template(grammar, "S")
-    print(template)
-    lexicon = load_lexicon("lexicon_edited.txt", "player_lexicon.txt")
-    print(make_sentence(template, lexicon))
